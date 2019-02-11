@@ -12,8 +12,9 @@ public class PlayerController : SimpleGameStateObserver {
 	[SerializeField] private string m_VerticalAxisName;
 	[SerializeField] private string m_HorizontalAxisName;
 	[SerializeField] private string m_FireAxisName;
+    [SerializeField] private string m_FireAxisNameUltim;
 
-	[Header("Spawn")]
+    [Header("Spawn")]
 	[SerializeField] private Transform m_SpawnPoint;
 
 	[Header("Movement")]
@@ -25,7 +26,13 @@ public class PlayerController : SimpleGameStateObserver {
 	private float m_NextShootTime;
 	[SerializeField] private Transform m_BulletSpawnPoint;
 
-	[Header("Gfx")]
+    [Header("Ultime")]
+    [SerializeField] private GameObject m_BulletPrefabUltim;
+    [SerializeField] private float m_ShootPeriodUltim;
+    private float m_NextShootTimeUltim;
+    [SerializeField] private Transform m_BulletSpawnPointUltim;
+
+    [Header("Gfx")]
 	[SerializeField] private Transform m_Gfx;
 	[SerializeField] private float m_GfxSwayAmplitude;
 	[SerializeField] private float m_GfxSwayPulsation;
@@ -48,6 +55,13 @@ public class PlayerController : SimpleGameStateObserver {
 			ShootBullet();
 			m_NextShootTime = Time.time + m_ShootPeriod;
 		}
+
+        //Ultime
+        if(Input.GetButton(m_FireAxisNameUltim) && m_NextShootTimeUltim<Time.time)
+        {
+            Ultime();
+            m_NextShootTimeUltim = Time.time + m_ShootPeriodUltim;
+        }
 
 		//Gfx rotation
 		m_Gfx.localRotation = Quaternion.AngleAxis(Mathf.Sin(Time.time*m_GfxSwayPulsation)*m_GfxSwayAmplitude,Vector3.right)*m_InitLocalOrientation;
@@ -81,6 +95,11 @@ public class PlayerController : SimpleGameStateObserver {
 	{
 		GameObject bulletGO = Instantiate(m_BulletPrefab, m_BulletSpawnPoint.position, Quaternion.identity);
 	}
+
+    void Ultime()
+    {
+        GameObject ultimGO = Instantiate(m_BulletPrefabUltim, m_BulletSpawnPointUltim.position, Quaternion.identity);
+    }
 
 	private void OnCollisionEnter(Collision collision)
 	{
