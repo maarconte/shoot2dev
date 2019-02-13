@@ -29,6 +29,10 @@ public class GameStatisticsChangedEvent : SDD.Events.Event
 	public int eNLives { get; set; }
 	public int eNEnemiesLeftBeforeVictory { get; set; }
 }
+public class CharacterSelectedEvent : SDD.Events.Event
+{
+    public int eCharacterIndex;
+}
 #endregion
 
 #region MenuManager Events
@@ -37,6 +41,10 @@ public class EscapeButtonClickedEvent : SDD.Events.Event
 }
 public class PlayButtonClickedEvent : SDD.Events.Event
 {
+}
+public class CharacterSelectionButtonClickedEvent : SDD.Events.Event
+{
+    public int eCharacterIndex;
 }
 public class ResumeButtonClickedEvent : SDD.Events.Event
 {

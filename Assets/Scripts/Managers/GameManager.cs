@@ -103,9 +103,11 @@ public class GameManager : Manager<GameManager> {
 		EventManager.Instance.AddListener<NextLevelButtonClickedEvent>(NextLevelButtonClicked);
 		EventManager.Instance.AddListener<ResumeButtonClickedEvent>(ResumeButtonClicked);
 		EventManager.Instance.AddListener<EscapeButtonClickedEvent>(EscapeButtonClicked);
+        EventManager.Instance.AddListener<CharacterSelectionButtonClickedEvent>(CharacterSelectionButtonHasBeenClicked);
 
-		//Enemy
-		EventManager.Instance.AddListener<EnemyHasBeenDestroyedEvent>(EnemyHasBeenDestroyed);		
+
+        //Enemy
+        EventManager.Instance.AddListener<EnemyHasBeenDestroyedEvent>(EnemyHasBeenDestroyed);		
 
 		//Score Item
 		EventManager.Instance.AddListener<ScoreItemEvent>(ScoreHasBeenGained);
@@ -128,9 +130,10 @@ public class GameManager : Manager<GameManager> {
 		EventManager.Instance.RemoveListener<NextLevelButtonClickedEvent>(NextLevelButtonClicked);
 		EventManager.Instance.RemoveListener<ResumeButtonClickedEvent>(ResumeButtonClicked);
 		EventManager.Instance.RemoveListener<EscapeButtonClickedEvent>(EscapeButtonClicked);
+        EventManager.Instance.RemoveListener<CharacterSelectionButtonClickedEvent>(CharacterSelectionButtonHasBeenClicked);
 
-		//Enemy
-		EventManager.Instance.RemoveListener<EnemyHasBeenDestroyedEvent>(EnemyHasBeenDestroyed);
+        //Enemy
+        EventManager.Instance.RemoveListener<EnemyHasBeenDestroyedEvent>(EnemyHasBeenDestroyed);
 
 		//Score Item
 		EventManager.Instance.RemoveListener<ScoreItemEvent>(ScoreHasBeenGained);
@@ -156,9 +159,15 @@ public class GameManager : Manager<GameManager> {
 		SetNLives(m_NStartLives);
 		SetNEnemiesLeftBeforeVictory(m_NEnemiesToDestroyForVictory);
 	}
+    #region Callbacks to events issued by GameManager
+    private void CharacterHasBeenSelected(CharacterSelectedEvent e)
+    {
+        Play();
+    }
+    #endregion
 
-	#region Callbacks to events issued by Enemy
-	private void EnemyHasBeenDestroyed(EnemyHasBeenDestroyedEvent e)
+    #region Callbacks to events issued by Enemy
+    private void EnemyHasBeenDestroyed(EnemyHasBeenDestroyedEvent e)
 	{
 		if (e.eDestroyedByPlayer)
 		{
@@ -227,12 +236,16 @@ public class GameManager : Manager<GameManager> {
 		if (IsPlaying)
 			Pause();
 	}
-	#endregion
+    private void CharacterSelectionButtonHasBeenClicked(CharacterSelectionButtonClickedEvent e)
+    {
+        EventManager.Instance.Raise(new CharacterSelectedEvent() { eCharacterIndex = e.eCharacterIndex });
+    }
+    #endregion
 
 
 
-	//EVENTS
-	private void Menu()
+    //EVENTS
+    private void Menu()
 	{
 		SetTimeScale(0);
 		m_GameState = GameState.gameMenu;

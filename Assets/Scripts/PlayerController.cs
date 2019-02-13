@@ -33,12 +33,24 @@ public class PlayerController : SimpleGameStateObserver {
     [SerializeField] private Transform m_BulletSpawnPointUltim;
 
     [Header("Gfx")]
-	[SerializeField] private Transform m_Gfx;
+    [SerializeField] private SpriteRenderer m_SpriteRenderer;
+    [SerializeField] private Sprite[] m_CharactersSprites;
+    [SerializeField] private Transform m_Gfx;
 	[SerializeField] private float m_GfxSwayAmplitude;
 	[SerializeField] private float m_GfxSwayPulsation;
 	Quaternion m_InitLocalOrientation;
 
-	protected override void Awake()
+    public override void SubscribeEvents()
+    {
+        base.SubscribeEvents();
+        EventManager.Instance.AddListener<CharacterSelectedEvent>(CharacterHasBeenSelected);
+    }
+    public override void UnsubscribeEvents()
+    {
+        base.UnsubscribeEvents();
+        EventManager.Instance.RemoveListener<CharacterSelectedEvent>(CharacterHasBeenSelected);
+    }
+    protected override void Awake()
 	{
 		base.Awake();
 		m_Rigidbody = GetComponent<Rigidbody>();
@@ -108,11 +120,15 @@ public class PlayerController : SimpleGameStateObserver {
 			EventManager.Instance.Raise(new PlayerHasBeenHitEvent() { ePlayerController = this });
 		}
 	}
-
-	//Game state events
-	protected override void GamePlay(GamePlayEvent e)
+    #region Callbacks to events issued by GameManager
+    private void CharacterHasBeenSelected(CharacterSelectedEvent e)
+    {
+        m_SpriteRenderer.sprite = m_CharactersSprites[e.eCharacterIndex];
+    }
+    //Game state events
+    protected override void GamePlay(GamePlayEvent e)
 	{
 		Reset();
 	}
-
+    #endregion
 }

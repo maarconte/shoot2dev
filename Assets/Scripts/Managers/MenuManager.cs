@@ -92,8 +92,11 @@ public class MenuManager : Manager<MenuManager>
 	{
 		EventManager.Instance.Raise(new PlayButtonClickedEvent());
 	}
-
-	public void ResumeButtonHasBeenClicked()
+    public void CharacterSelectionButtonHasBeenClicked(int CharacterIndex)
+    {
+        EventManager.Instance.Raise(new CharacterSelectionButtonClickedEvent() { eCharacterIndex = CharacterIndex });
+    }
+    public void ResumeButtonHasBeenClicked()
 	{
 		EventManager.Instance.Raise(new ResumeButtonClickedEvent());
 	}
